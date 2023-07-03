@@ -7,7 +7,7 @@ namespace RenderRSS.Pages
 {
     public class IndexModel : PageModel
     {
-        public List<FeedItem> FeedItems { get; set; }
+        public List<FeedItem> FeedItems { get; set; } = new List<FeedItem>();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -17,7 +17,7 @@ namespace RenderRSS.Pages
             return Page();
         }
 
-        private async Task<string> FetchXmlContentAsync(string url)
+        async Task<string> FetchXmlContentAsync(string url)
         {
             using (var httpClient = new HttpClient())
             {
@@ -25,7 +25,7 @@ namespace RenderRSS.Pages
             }
         }
 
-        private List<FeedItem> ParseXmlContent(string xmlContent)
+        List<FeedItem> ParseXmlContent(string xmlContent)
         {
             var feedItems = new List<FeedItem>();
             XmlDocument doc = new XmlDocument();
@@ -51,7 +51,7 @@ namespace RenderRSS.Pages
 
     public class FeedItem
     {
-        public string ? Title { get; set; }
+        public string? Title { get; set; }
         public string  Description { get; set; }
         public DateTime  PubDate { get; set; }
         public string  Link { get; set; }
