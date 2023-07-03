@@ -7,22 +7,35 @@ namespace RenderRSS.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         public List<FeedItem> FeedItems { get; set; } = new List<FeedItem>();
 
+        public IndexModel(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
         public async Task<IActionResult> OnGetAsync()
         {
-            var xmlContent = await FetchXmlContentAsync("http://scripting.com/rss.xml");
-            FeedItems = ParseXmlContent(xmlContent);
+            var httpClient = _httpClientFactory.CreateClient();
 
-            return Page();
+            var response = await FetchXmlContentAsync(httpClient, "http://scripting.com/rss.xml");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var xmlContent = await response.Content.ReadAsStringAsync();
+                FeedItems = ParseXmlContent(xmlContent);
+
+                return Page();
+            }
+            else
+            {
+                return RedirectToPage("/Error");
+            }
         }
 
-        async Task<string> FetchXmlContentAsync(string url)
+        async Task<HttpResponseMessage> FetchXmlContentAsync(HttpClient httpClient, string url)
         {
-            using (var httpClient = new HttpClient())
-            {
-                return await httpClient.GetStringAsync(url);
-            }
+            return await httpClient.GetAsync(url);
         }
 
         List<FeedItem> ParseXmlContent(string xmlContent)
