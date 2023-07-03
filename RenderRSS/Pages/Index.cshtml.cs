@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Xml;
 using System.Xml.Linq;
@@ -14,10 +14,10 @@ namespace RenderRSS.Pages
         {
             _httpClientFactory = httpClientFactory;
         }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var httpClient = _httpClientFactory.CreateClient();
-
             var response = await FetchXmlContentAsync(httpClient, "http://scripting.com/rss.xml");
 
             if (response.IsSuccessStatusCode)
@@ -58,6 +58,7 @@ namespace RenderRSS.Pages
 
                 feedItems.Add(feedItem);
             }
+
             return feedItems;
         }
     }
@@ -65,8 +66,8 @@ namespace RenderRSS.Pages
     public class FeedItem
     {
         public string? Title { get; set; }
-        public string  Description { get; set; }
-        public DateTime  PubDate { get; set; }
-        public string  Link { get; set; }
+        public string Description { get; set; }
+        public DateTime PubDate { get; set; }
+        public string Link { get; set; }
     }
 }
